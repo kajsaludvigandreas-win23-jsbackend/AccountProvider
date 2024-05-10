@@ -16,10 +16,20 @@ using Microsoft.Azure.WebJobs;
 
 namespace AccountProvider.Functions;
 
-public class SignUp(ILogger<SignUp> logger, UserManager<UserAccount> userManager)
+public class SignUp
 {
-    private readonly ILogger<SignUp> _logger = logger;
-    private readonly UserManager<UserAccount> _userManager = userManager;
+    private readonly ILogger<SignUp> _logger;
+    private readonly UserManager<UserAccount> _userManager;
+    private readonly QueueClient _queueClient;
+
+    public SignUp(ILogger<SignUp> logger, UserManager<UserAccount> userManager)
+    {
+        _logger = logger;
+        _userManager = userManager;
+        string serviceBusConnection = Environment.GetEnvironmentVariable("ServiceBusConnection")!;
+        string queueName = Environment.GetEnvironmentVariable("ServiceBusQueueName")!;
+        _queueClient = new QueueClient(serviceBusConnection, queueName);
+    }
 
     [Function("SignUp")]
 
@@ -73,9 +83,9 @@ public class SignUp(ILogger<SignUp> logger, UserManager<UserAccount> userManager
                             //get VerificationKey from VerifitionProvider
                             try
                             {
-                                using var http = new HttpClient();
-                                StringContent content = new StringContent(JsonConvert.SerializeObject(new { Email= userAccount.Email}), Encoding.UTF8 , "application/json");
-                                var response = await http.PostAsync("https://siliconaccountprovider.azurewebsites.net/api/SignUp?code=KannPV-4oNLMUuCdsDQq2rDwo9HqWEagnhkOk_iAUSBrAzFuLhjmSg==", content);
+                                var message = new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { Email = userAccount.Email })));
+                                await _queueClient.SendAsync(message);
+                                _logger.LogInformation("Message sent to Service Bus queue.");
                             }
                             catch
                             {
