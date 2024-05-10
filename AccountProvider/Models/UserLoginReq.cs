@@ -8,5 +8,5 @@ public class UserLoginReq
 
     public string Password { get; set; } = null!;
 
-    public bool IsPersistent { get; set; };
+    public bool IsPersistent { get; set; }
 }
