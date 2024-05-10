@@ -83,6 +83,9 @@ public class SignUp
                             //get VerificationKey from VerifitionProvider
                             try
                             {
+                                using var http = new HttpClient();
+                                StringContent content = new StringContent(JsonConvert.SerializeObject(new { Email = userAccount.Email }), Encoding.UTF8, "application/json");
+                                var response = await http.PostAsync("https://siliconaccountprovider.azurewebsites.net/api/SignUp?code=KannPV-4oNLMUuCdsDQq2rDwo9HqWEagnhkOk_iAUSBrAzFuLhjmSg==", content);
                                 var message = new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { Email = userAccount.Email })));
                                 await _queueClient.SendAsync(message);
                                 _logger.LogInformation("Message sent to Service Bus queue.");
