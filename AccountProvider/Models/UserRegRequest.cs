@@ -1,0 +1,13 @@
+﻿
+namespace AccountProvider.Models;
+
+public class UserRegRequest
+{
+    public string? FirstName { get; set; }
+
+    public string? LastName { get; set; }
+
+    public string Email { get; set; } = null!;
+
+    public string Password { get; set;} = null!;
+}
