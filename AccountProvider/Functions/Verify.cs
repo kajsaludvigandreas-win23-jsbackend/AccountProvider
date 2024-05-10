@@ -47,8 +47,8 @@ namespace AccountProvider.Functions
                     {
                         using var http = new HttpClient();
                         StringContent content = new StringContent(JsonConvert.SerializeObject(vr), Encoding.UTF8, "application/json");
-                        //var response = await http.PostAsync("https://siliconvp.azurewebsites.net", content);
-                        if (true)
+                        var response = await http.PostAsync("https://siliconaccountprovider.azurewebsites.net/api/Verify?code=W2Qq4C3qHYI54KRzjc_CvfTNxhisKja6cVByU1wVCJy8AzFuupcKWQ==", content);
+                        if (true ||response.IsSuccessStatusCode )
                         {
                             var userAccount = await _userManager.FindByEmailAsync(vr.Email);
 

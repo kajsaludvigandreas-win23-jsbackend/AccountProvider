@@ -8,6 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Text;
+using Azure.Messaging;
+using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.WebJobs;
+
+
 
 namespace AccountProvider.Functions;
 
@@ -17,7 +22,9 @@ public class SignUp(ILogger<SignUp> logger, UserManager<UserAccount> userManager
     private readonly UserManager<UserAccount> _userManager = userManager;
 
     [Function("SignUp")]
-    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
+
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req )
+
     {
         string body = null!;
         try
@@ -68,7 +75,7 @@ public class SignUp(ILogger<SignUp> logger, UserManager<UserAccount> userManager
                             {
                                 using var http = new HttpClient();
                                 StringContent content = new StringContent(JsonConvert.SerializeObject(new { Email= userAccount.Email}), Encoding.UTF8 , "application/json");
-                                var response = await http.PostAsync("https://siliconvp.azurewebsites.net", content);
+                                var response = await http.PostAsync("https://siliconaccountprovider.azurewebsites.net/api/SignUp?code=KannPV-4oNLMUuCdsDQq2rDwo9HqWEagnhkOk_iAUSBrAzFuLhjmSg==", content);
                             }
                             catch
                             {
