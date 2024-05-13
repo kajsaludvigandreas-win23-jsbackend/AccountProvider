@@ -72,7 +72,6 @@ public class SignUp
                         FirstName = urr.FirstName,
                         LastName = urr.LastName,
                         UserName = urr.Email,
-                        PasswordHash = urr.Password
                     };
 
                     try
