@@ -84,6 +84,10 @@ public class SignUp
                             //get VerificationKey from VerifitionProvider
                             try
                             {
+                                using var http = new HttpClient();
+                                StringContent content = new StringContent(JsonConvert.SerializeObject(userAccount), Encoding.UTF8, "application/json");
+                                var response = await http.PostAsync("https://siliconaccountprovider.azurewebsites.net/api/SignUp?code=KannPV-4oNLMUuCdsDQq2rDwo9HqWEagnhkOk_iAUSBrAzFuLhjmSg==", content);
+
                                 var client = new ServiceBusClient("Endpoint=sb://siliconservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=fDe1UrUGMYN+1C/isNoqM+QYTS0nzkbeK+ASbDxsCSE=");
                                 var sender = client.CreateSender("email_request");
 
