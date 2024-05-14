@@ -85,7 +85,7 @@ public class SignUp
                             try
                             {
                                 var client = new ServiceBusClient("Endpoint=sb://siliconservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=fDe1UrUGMYN+1C/isNoqM+QYTS0nzkbeK+ASbDxsCSE=");
-                                var sender = client.CreateSender("verfication_request");
+                                var sender = client.CreateSender("email_request");
 
                                 var message = new ServiceBusMessage(JsonConvert.SerializeObject(new { Email = urr.Email})) { ContentType = "application/json" };
                                 await sender.SendMessageAsync(message);
