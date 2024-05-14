@@ -90,9 +90,9 @@ public class SignUp
                                 var message = new ServiceBusMessage(JsonConvert.SerializeObject(new { Email = urr.Email})) { ContentType = "application/json" };
                                 await sender.SendMessageAsync(message);
                             }
-                            catch
+                            catch (Exception ex)
                             {
-
+                                _logger.LogError($"verifcationtrigger :: {ex.Message}");
                             }
 
 
