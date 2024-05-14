@@ -33,101 +33,45 @@ public class SignUp
     }
 
     [Function("SignUp")]
-
-    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req )
-
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
     {
-        string body = null!;
-        try
+        string body = await new StreamReader(req.Body).ReadToEndAsync();
+        UserRegRequest urr = JsonConvert.DeserializeObject<UserRegRequest>(body)!;
+
+        if (urr != null && !string.IsNullOrEmpty(urr.Email) && !string.IsNullOrEmpty(urr.Password))
         {
-            body = await new StreamReader(req.Body).ReadToEndAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"StreamReader :: {ex.Message}");
-
-        }
-
-
-        if (body != null)
-        {
-            UserRegRequest urr = null!;
-            try
+            if (!await _userManager.Users.AnyAsync(x => x.Email == urr.Email))
             {
-                urr = JsonConvert.DeserializeObject<UserRegRequest>(body)!;
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"JsonConvert :: {ex.Message}");
-            }
-            
-
-            if (urr != null && !string.IsNullOrEmpty(urr.Email) && !string.IsNullOrEmpty(urr.Password))
-            {
-                if (!await _userManager.Users.AnyAsync(x => x.Email == urr.Email))
+                var userAccount = new UserAccount
                 {
-                    var userAccount = new UserAccount
-                    {
-                        Email = urr.Email,
-                        FirstName = urr.FirstName,
-                        LastName = urr.LastName,
-                        UserName = urr.Email,
-                    };
+                    Email = urr.Email,
+                    FirstName = urr.FirstName,
+                    LastName = urr.LastName,
+                    UserName = urr.Email
+                };
 
-                    var emailForVerify = new EmailModel
-                    {
-                        Email = urr.Email,
-                    };
-
-                    try
-                    {
-                        var result = await _userManager.CreateAsync(userAccount, urr.Password);
-
-                        if (result.Succeeded)
-                        {
-                            //get VerificationKey from VerifitionProvider
-                            try
-                            {
-                               
-                                var message = new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new EmailModel { Email = urr.Email })));
-
-                                var queueClient = new QueueClient("Endpoint=sb://siliconservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=fDe1UrUGMYN+1C/isNoqM+QYTS0nzkbeK+ASbDxsCSE=", "verification_request");
-                                await queueClient.SendAsync(message);
-
-
-                            }
-                            catch (Exception ex)
-                            {
-                                _logger.LogError($"verifcationtrigger :: {ex.Message}");
-                            }
-
-
-                            return new OkResult();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"CreateAsync :: {ex.Message}");
-                    }
-
-
-                }
-                else
+                var emailForVerify = new EmailForVerify
                 {
-                    return new ConflictResult();
+                    Email = urr.Email
+                };
+
+                var result = await _userManager.CreateAsync(userAccount, urr.Password);
+                if (result.Succeeded)
+                {
+                    var message = new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(emailForVerify)));
+                    await _queueClient.SendAsync(message);
+                    return new OkResult();
                 }
             }
-
-
+            else
+            {
+                return new ConflictResult();
+            }
         }
         return new BadRequestResult();
-
-
     }
 
-
-    public class EmailModel
+    public class EmailForVerify
     {
         public string Email { get; set; } = null!;
     }
