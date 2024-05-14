@@ -75,6 +75,11 @@ public class SignUp
                         UserName = urr.Email,
                     };
 
+                    var emailForVerify = new EmailModel
+                    {
+                        Email = urr.Email,
+                    };
+
                     try
                     {
                         var result = await _userManager.CreateAsync(userAccount, urr.Password);
@@ -84,15 +89,13 @@ public class SignUp
                             //get VerificationKey from VerifitionProvider
                             try
                             {
-                                using var http = new HttpClient();
-                                StringContent content = new StringContent(JsonConvert.SerializeObject(userAccount), Encoding.UTF8, "application/json");
-                                var response = await http.PostAsync("https://siliconaccountprovider.azurewebsites.net/api/SignUp?code=KannPV-4oNLMUuCdsDQq2rDwo9HqWEagnhkOk_iAUSBrAzFuLhjmSg==", content);
+                               
+                                var message = new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new EmailModel { Email = urr.Email })));
 
-                                var client = new ServiceBusClient("Endpoint=sb://siliconservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=fDe1UrUGMYN+1C/isNoqM+QYTS0nzkbeK+ASbDxsCSE=");
-                                var sender = client.CreateSender("email_request");
+                                var queueClient = new QueueClient("Endpoint=sb://siliconservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=fDe1UrUGMYN+1C/isNoqM+QYTS0nzkbeK+ASbDxsCSE=", "verification_request");
+                                await queueClient.SendAsync(message);
 
-                                var message = new ServiceBusMessage(JsonConvert.SerializeObject(new { Email = urr.Email})) { ContentType = "application/json" };
-                                await sender.SendMessageAsync(message);
+
                             }
                             catch (Exception ex)
                             {
@@ -122,4 +125,11 @@ public class SignUp
 
 
     }
+
+
+    public class EmailModel
+    {
+        public string Email { get; set; } = null!;
+    }
 }
+
