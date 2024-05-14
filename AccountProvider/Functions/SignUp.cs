@@ -11,6 +11,7 @@ using System.Text;
 using Azure.Messaging;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
+using Azure.Messaging.ServiceBus;
 
 
 
@@ -83,14 +84,11 @@ public class SignUp
                             //get VerificationKey from VerifitionProvider
                             try
                             {
-                                using var http = new HttpClient();
-                                StringContent content = new StringContent(JsonConvert.SerializeObject(userAccount), Encoding.UTF8, "application/json");
-                                var response = await http.PostAsync("https://siliconaccountprovider.azurewebsites.net/api/SignUp?code=KannPV-4oNLMUuCdsDQq2rDwo9HqWEagnhkOk_iAUSBrAzFuLhjmSg==", content);
-                               
-                                
-                                var message = new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { Email = userAccount.Email })));
-                                await _queueClient.SendAsync(message);
-                                _logger.LogInformation("Message sent to Service Bus queue.");
+                                var client = new ServiceBusClient("Endpoint=sb://siliconservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=fDe1UrUGMYN+1C/isNoqM+QYTS0nzkbeK+ASbDxsCSE=");
+                                var sender = client.CreateSender("verfication_request");
+
+                                var message = new ServiceBusMessage(JsonConvert.SerializeObject(new { Email = urr.Email})) { ContentType = "application/json" };
+                                await sender.SendMessageAsync(message);
                             }
                             catch
                             {
