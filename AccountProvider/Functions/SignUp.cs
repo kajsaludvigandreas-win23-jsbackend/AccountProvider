@@ -35,45 +35,83 @@ public class SignUp
     [Function("SignUp")]
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
     {
-        string body = await new StreamReader(req.Body).ReadToEndAsync();
-        UserRegRequest urr = JsonConvert.DeserializeObject<UserRegRequest>(body)!;
+        string body = null!;
 
-        if (urr != null && !string.IsNullOrEmpty(urr.Email) && !string.IsNullOrEmpty(urr.Password))
+        try
         {
-            if (!await _userManager.Users.AnyAsync(x => x.Email == urr.Email))
+            body = await new StreamReader(req.Body).ReadToEndAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"StreamReader :: {ex.Message}");
+
+        }
+
+        if (body != null)
+        {
+            UserRegRequest urr = null!;
+
+            try
             {
-                var userAccount = new UserAccount
-                {
-                    Email = urr.Email,
-                    FirstName = urr.FirstName,
-                    LastName = urr.LastName,
-                    UserName = urr.Email
-                };
+                urr = JsonConvert.DeserializeObject<UserRegRequest>(body)!;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"JsonConvert.DeserializeObject :: {ex.Message}");
+            }
 
-                var emailForVerify = new EmailForVerify
+            if (urr != null && !string.IsNullOrEmpty(urr.Email) && !string.IsNullOrEmpty(urr.Password))
+            {
+                if (!await _userManager.Users.AnyAsync(x => x.Email == urr.Email))
                 {
-                    Email = urr.Email
-                };
+                    var userAccount = new UserAccount
+                    {
+                        Email = urr.Email,
+                        FirstName = urr.FirstName,
+                        LastName = urr.LastName,
+                        UserName = urr.Email
+                    };
 
-                var result = await _userManager.CreateAsync(userAccount, urr.Password);
-                if (result.Succeeded)
+                    var emailForVerify = new EmailForVerify
+                    {
+                        Email = urr.Email
+                    };
+
+                    try
+                    {
+                        var result = await _userManager.CreateAsync(userAccount, urr.Password);
+                        if (result.Succeeded)
+                        {
+                            var message = new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(emailForVerify)));
+                            await _queueClient.SendAsync(message);
+                            return new OkResult();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"_userManager.CreateAsync :: {ex.Message}");
+                    }
+
+                }
+                else
                 {
-                    var message = new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(emailForVerify)));
-                    await _queueClient.SendAsync(message);
-                    return new OkResult();
+                    return new ConflictResult();
                 }
             }
-            else
-            {
-                return new ConflictResult();
-            }
+            return new BadRequestResult();
+
         }
         return new BadRequestResult();
     }
-
     public class EmailForVerify
     {
         public string Email { get; set; } = null!;
+
     }
+
+
+
+
 }
+
 
