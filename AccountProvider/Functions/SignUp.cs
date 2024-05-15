@@ -35,6 +35,9 @@ public class SignUp
     [Function("SignUp")]
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
     {
+       
+        
+        
         string body = await new StreamReader(req.Body).ReadToEndAsync();
         UserRegRequest urr = JsonConvert.DeserializeObject<UserRegRequest>(body)!;
 
@@ -58,6 +61,9 @@ public class SignUp
                 var result = await _userManager.CreateAsync(userAccount, urr.Password);
                 if (result.Succeeded)
                 {
+
+
+
                     var message = new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(emailForVerify)));
                     await _queueClient.SendAsync(message);
                     return new OkResult();
