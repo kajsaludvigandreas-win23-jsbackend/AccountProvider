@@ -13,7 +13,7 @@ var host = new HostBuilder()
     {
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
-        services.AddDbContext<DataContext>(x => x.UseSqlServer(context.Configuration.GetConnectionString("AccountDataBase")));
+        services.AddDbContext<DataContext>(x => x.UseSqlServer(Environment.GetEnvironmentVariable("SQLDATABASE")));
         services.AddDefaultIdentity<UserAccount>(x =>
         {
             x.SignIn.RequireConfirmedAccount = true;
