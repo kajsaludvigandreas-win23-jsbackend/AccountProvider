@@ -39,4 +39,4 @@ jobs:
           app-name: 'siliconAccountProvider'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_387F5A6D426F45D0857170DF9995030B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C5159A7D91AC49C689406D2F52E1DAD9 }}
