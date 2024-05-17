@@ -47,7 +47,7 @@ namespace AccountProvider.Functions
                     {
                         using var http = new HttpClient();
                         StringContent content = new StringContent(JsonConvert.SerializeObject(vr), Encoding.UTF8, "application/json");
-                        var response = await http.PostAsync("https://accountprovider-lak.azurewebsites.net/api/Verify?code=N1hBBTeLk248zkFPViXTvVCXmIogQ7Yk3ksZoomPC8TaAzFu7Crf0g%3D%3D", content);
+                        var response = await http.PostAsync("https://verificationprovider-lak.azurewebsites.net/api/validate?code=cH1VxxlWfQGGV848ccoC0EUi2DWS-frUvK_OsLglZhtVAzFu4DVQTg%3D%3D", content);
                         if (true ||response.IsSuccessStatusCode )
                         {
                             var userAccount = await _userManager.FindByEmailAsync(vr.Email);
