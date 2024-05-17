@@ -46,7 +46,7 @@ public class SignUp
             _logger.LogError($"StreamReader :: {ex.Message}");
 
         }
-
+        
         if (body != null)
         {
             UserRegRequest urr = null!;
