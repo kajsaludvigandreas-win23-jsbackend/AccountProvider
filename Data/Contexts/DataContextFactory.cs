@@ -11,7 +11,7 @@ public class DataContextFactory : IDesignTimeDbContextFactory<DataContext>
 
     { 
         var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
-        optionsBuilder.UseSqlServer("Server=tcp:backendjs.database.windows.net,1433;Initial Catalog=JsBackendDB;Persist Security Info=False;User ID=SQLAdmin;Password=Bytmig123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        optionsBuilder.UseSqlServer("Server=tcp:sql-lak.database.windows.net,1433;Initial Catalog=account_database;Persist Security Info=False;User ID=SqlAdmin;Password=BytMig123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         return new DataContext(optionsBuilder.Options); 
     }
 }
