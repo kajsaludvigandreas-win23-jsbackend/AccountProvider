@@ -40,7 +40,7 @@ namespace AccountProvider.Functions
                 {
                     _logger.LogError($"JsonConvert :: {ex.Message}");
                 }
-
+                //hej
                 if (vr != null && !string.IsNullOrEmpty(vr.Email) && !string.IsNullOrEmpty(vr.VerificationCode))
                 {
                     try
