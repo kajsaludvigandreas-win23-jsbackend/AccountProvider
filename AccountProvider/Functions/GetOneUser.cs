@@ -57,7 +57,7 @@ namespace AccountProvider.Functions
                     return new BadRequestObjectResult("No email provided");
                 }
 
-                UserAccount user = null!;
+                UserAccount? user = null!;
 
                 try
                 {
