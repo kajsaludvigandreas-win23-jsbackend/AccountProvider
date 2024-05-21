@@ -7,6 +7,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Text;
 
 namespace AccountProvider.Functions;
 
@@ -49,8 +50,23 @@ public class SignIn(ILogger<SignIn> logger, SignInManager<UserAccount> signInMan
 
                     if(result.Succeeded)
                     {
-                        //get token from TokenProvider
-                        return new OkObjectResult("accesstoken");
+                        //TokenRequestModel trm = null!;
+
+                        //var user = await _userManager.FindByEmailAsync(ulr.Email);
+
+                        //try
+                        //{
+                        //    trm = JsonConvert.DeserializeObject<TokenRequestModel>(body)
+                        //}
+                        //catch
+                        //{
+
+                        //}
+
+                        //using var http = new HttpClient();
+                        //StringContent content = new StringContent(JsonConvert.SerializeObject(ulr), Encoding.UTF8, "application/json");
+                        //var response = await http.PostAsync("https://tokenprovider-lak.azurewebsites.net/api/token/generate?code=BlxkX3vo2gMEXeGGwUmb3HliUde6gaGeA2FX6GoCp4mgAzFug-fh_A%3D%3D", content);
+                        return new OkResult();
                     }
                     return new UnauthorizedResult();
                 }
