@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace AccountProvider.Functions
@@ -19,11 +20,11 @@ namespace AccountProvider.Functions
         }
 
         [Function("GetAllUsers")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
         {
             try
             {
-                var users = _userManager.Users;
+                var users = await _userManager.Users.ToListAsync();
                 return new OkObjectResult(users);
 
             }
