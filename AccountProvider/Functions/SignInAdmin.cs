@@ -79,7 +79,7 @@ namespace AccountProvider.Functions
                         }
                         return new UnauthorizedResult();
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) // hej
                     {
                         _logger.LogError($"PasswordSignInAsync :: {ex.Message}");
                     }
