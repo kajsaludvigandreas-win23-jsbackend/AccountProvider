@@ -23,7 +23,7 @@ namespace AccountProvider.Functions
         }
 
         [Function("GetOneUser")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
         {
             string body = null!;
 

@@ -9,6 +9,8 @@ public class UserAccount : IdentityUser
 
     public string? AddressId { get; set; }
 
+    public string? ProfileImageUri { get; set; }
+
     public UserAddress? Address { get; set; }
     
 }

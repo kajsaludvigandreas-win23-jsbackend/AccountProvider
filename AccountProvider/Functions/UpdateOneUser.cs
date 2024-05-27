@@ -66,10 +66,16 @@ namespace AccountProvider.Functions
                     user.PhoneNumber = userModel.PhoneNumber;
                 }
 
+                if(!string.IsNullOrEmpty(userModel.ProfileImageUri)) 
+                {
+                    user.ProfileImageUri = userModel.ProfileImageUri;
+                }
+
                 IdentityResult result = _userManager.UpdateAsync(user).Result;
 
                 if (result.Succeeded)
                 {
+                    
                     return new OkObjectResult("User updated");
                 }
                 else

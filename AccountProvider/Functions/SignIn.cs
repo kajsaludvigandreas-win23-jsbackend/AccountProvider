@@ -51,10 +51,6 @@ public class SignIn(ILogger<SignIn> logger, SignInManager<UserAccount> signInMan
                     var user = await _userManager.FindByEmailAsync(ulr.Email);
                     var result = await _signInManager.CheckPasswordSignInAsync(user!, ulr.Password, false);
 
-                   
-
-
-
                     if (result.Succeeded)
                     {
                         if(user!.Email != null && user.Id != null)
