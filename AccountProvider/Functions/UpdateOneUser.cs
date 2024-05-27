@@ -66,7 +66,7 @@ namespace AccountProvider.Functions
                     user.PhoneNumber = userModel.PhoneNumber;
                 }
 
-                if(!string.IsNullOrEmpty(userModel.ProfileImageUri)) 
+                if(!string.IsNullOrEmpty(userModel.ProfileImageUri)) //addition
                 {
                     user.ProfileImageUri = userModel.ProfileImageUri;
                 }
