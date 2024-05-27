@@ -67,8 +67,7 @@ namespace AccountProvider.Functions
                     catch
                     {
 
-                    }
-                    
+                    }                    
                 }
             }
             return new UnauthorizedResult();
