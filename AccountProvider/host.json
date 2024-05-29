@@ -8,18 +8,5 @@
       },
       "enableLiveMetricsFilters": true
     }
-  },
-  "extensions": {
-    "http": {
-      "routePrefix": "",
-      "maxOutstandingRequests": 200,
-      "maxConcurrentRequests": 100,
-      "dynamicThrottlesEnabled": true,
-      "cors": {
-        "allowedOrigins": [
-          "*"
-        ]
-      }
-    }
   }
 }
